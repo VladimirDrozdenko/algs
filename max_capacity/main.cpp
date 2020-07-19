@@ -37,16 +37,6 @@ unsigned int getNumberOfRides(const vector<unsigned int>& a, const size_t truck_
     return rides;
 }
 
-/*
-  a = [7, 3, 2, 3, 1, 4]
-
-O(NlogN) using binary search:
-
-      |4, 3, 3,  2,  2, ...  1| required rides to move entire a
-  s = |7, 8, 9, 10, 11, ... 20| corresponding truck capacity
-       ^                     ^
-    left_cap             right_cap
-*/
 void bruteForceSolution(const vector<unsigned int>& a, size_t k) {
     const size_t n = a.size();
 
@@ -73,6 +63,16 @@ void bruteForceSolution(const vector<unsigned int>& a, size_t k) {
     }
 }
 
+/*
+  a = [7, 3, 2, 3, 1, 4]
+
+O(NlogN) using binary search:
+
+      |4, 3, 3,  2,  2, ...  1| required rides to move entire a
+  s = |7, 8, 9, 10, 11, ... 20| corresponding truck capacity
+       ^                     ^
+    left_cap             right_cap
+*/
 void nlognSolution(const vector<unsigned int>& a, size_t k) {
 
     size_t min_capacity_res = 0;
