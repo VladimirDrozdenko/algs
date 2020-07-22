@@ -32,19 +32,52 @@ For example, if you click on the top right corner you get this ('-' means hidden
 #include <vector>
 using namespace std;
 
-const vector<vector<int>> mine_field = {
-        vector<int>({0, 0, 0, 0, 0}),
-        vector<int>({0, 0, 0, 0, 0}),
-        vector<int>({1, 1, 1, 0, 0}),
-        vector<int>({1, 9, 1, 0, 0}),
-        vector<int>({1, 2, 3, 1, 0}),
-        vector<int>({0, 1, 9, 1, 0}),
-        vector<int>({0, 1, 1, 1, 0}),
-    };
-const size_t N = mine_field.size();
-const size_t M = mine_field.at(0).size();
-
+vector<vector<int>> mine_field;
 vector<vector<bool>> is_opened;
+
+const size_t N_rows = 10;
+const size_t M_cols = 10;
+
+
+void generateMainField(size_t mines) {
+
+    srand(time(0));
+
+    if (mines >= N_rows*M_cols) {
+        throw out_of_range("too many mines");
+    }
+
+    mine_field.clear();
+    is_opened.clear();
+
+    // Initialize empry mine field
+    for (size_t r = 0; r < N_rows; ++r) {
+        is_opened.push_back(vector<bool>());
+        mine_field.push_back(vector<int>());
+        for (size_t c = 0; c < M_cols; ++c) {
+            is_opened.at(r).push_back(false);
+            mine_field.at(r).push_back(0);
+        }
+    }
+
+    while (mines > 0) {
+        size_t row = rand() % N_rows;
+        size_t col = rand() % M_cols;
+
+        if (mine_field[row][col] == 9)
+            continue;
+        
+        --mines;
+        mine_field[row][col] = 9;
+
+        for (size_t r = (row > 0)? row-1: row; r <= ((row < N_rows-1)? row+1: row); ++r) {
+            for (size_t c = (col > 0)? col-1: col; c <= ((col < M_cols-1)? col+1: col); ++c) {
+                if (mine_field[r][c] != 9)
+                    ++mine_field[r][c];
+            }
+        }
+    }
+}
 
 void printOpenedField() {
     for (size_t r = 0; r < mine_field.size(); ++r) {
@@ -78,8 +111,8 @@ GameState click(int row, int col) {
     if (mine_field[row][col] != 0)
         return GameState::Step;
 
-    for (size_t r = (row > 0)? row-1: row; r <= ((row < N-1)? row+1: row); ++r) {
-        for (size_t c = (col > 0)? col-1: col; c <= ((col < M-1)? col+1: col); ++c) {
+    for (size_t r = (row > 0)? row-1: row; r <= ((row < N_rows-1)? row+1: row); ++r) {
+        for (size_t c = (col > 0)? col-1: col; c <= ((col < M_cols-1)? col+1: col); ++c) {
             if (r == row && c == col)
                 continue;
             click(r, c);
@@ -90,36 +123,24 @@ GameState click(int row, int col) {
 }
 
 int main() {
-    for (size_t r = 0; r < mine_field.size(); ++r) {
-        is_opened.push_back(vector<bool>());
-        for (size_t c = 0; c < mine_field.at(0).size(); ++c) {
-            is_opened.at(r).push_back(false);
-        }
-    }
+    generateMainField(10);
 
     printOpenedField();
 
-    GameState game_state = Step;
+    GameState game_state;
     
     do {
         int row = 0, col = 0;
-        // cout << "Enter row: ";
-        // cin >> row;
+        cout << "Enter row: ";
+        cin >> row;
 
-        // cout << "Enter col: ";
-        // cin >> col;
+        cout << "Enter col: ";
+        cin >> col;
 
         game_state = click(row, col);
         printOpenedField();
 
-        game_state = click(3, 0);
-        printOpenedField();
-
-        game_state = click(6, 0);
-        printOpenedField();
-
         cout << endl;
-        return 0;
     } while (game_state == GameState::Step);
 
     if (game_state == GameState::Won)
