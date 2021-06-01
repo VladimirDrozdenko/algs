@@ -43,6 +43,38 @@ int maze[n][m] =
 /* 9 */ {0, 1, 1, 1, 1, 0, 0, 1, 0, 1}
 };
 
+
+void printPath(int tracker[n][m], pair<int, int> dest)
+{
+    if (tracker[dest.first][dest.second] == 1)
+    {
+        return;
+    }
+
+    // check right
+    if (dest.second > 0 && tracker[dest.first][dest.second - 1] == tracker[dest.first][dest.second] - 1)
+    {
+        printPath(tracker, make_pair(dest.first, dest.second - 1));
+    }
+    // check top
+    else if (dest.first > 0 && tracker[dest.first - 1][dest.second] == tracker[dest.first][dest.second] - 1)
+    {
+        printPath(tracker, make_pair(dest.first - 1, dest.second));
+    }
+    // check right
+    else if (dest.second < m - 1 && tracker[dest.first][dest.second + 1] == tracker[dest.first][dest.second] - 1)
+    {
+        printPath(tracker, make_pair(dest.first, dest.second + 1));
+    }
+    // check bottom
+    else if (dest.first < n - 1 && tracker[dest.first + 1][dest.second] == tracker[dest.first][dest.second] - 1)
+    {
+        printPath(tracker, make_pair(dest.first + 1, dest.second));
+    }
+    
+    cout << "(" << dest.first << "," << dest.second << ")" << endl;
+}
+
 int leeAlgDistance(const pair<int, int>& src, const pair<int, int>& dest)
 {
     if (!maze[src.first][src.second] || !maze[dest.first][dest.second])
@@ -61,10 +93,14 @@ int leeAlgDistance(const pair<int, int>& src, const pair<int, int>& dest)
 
         // reached destination
         if (cell.first == dest.first && cell.second == dest.second)
+        {
+            printPath(tracker, dest);
             return tracker[cell.first][cell.second] - 1;
+        }
+
         q.pop();
 
-        // add  cells to the queue 
+        // add neighbor cells to the queue 
 
         // left
         if (cell.second > 0 && maze[cell.first][cell.second - 1] && tracker[cell.first][cell.second - 1] == 0)
