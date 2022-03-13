@@ -2,6 +2,16 @@
 using namespace std;
 
 
+void shiftOneRight(int* a, int size) {
+    
+    int tmp = a[size-1];
+    for (int i = size-2; i >= 0; --i) {
+        a[i+1] = a[i];
+    }
+    a[0] = tmp;
+}
+
+
 int main() {
 
     int a[] = {1, 2, 3, 4, 5, 6, 7};
@@ -10,14 +20,8 @@ int main() {
     int k = 123;
     k %= N;
 
-    if (N - k < N/2) {
-        for (int b = 0, e = N - k; e < N; ++e) {
-            swap(a[b++], a[e]);
-        }
-    } else {
-        for (int e = N - 1, b = N - k - 1; b >= 0; --b) {
-            swap(a[b], a[e--]);
-        }
+    for (int i = 0; i < k; ++i) {
+        shiftOneRight(a, N);
     }
 
     cout << "Rotated: [";
