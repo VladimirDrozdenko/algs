@@ -107,4 +107,11 @@ int main() {
     }
 
     cout << endl;
+
+    // clean up memory
+    while (res) {
+        ListNode* tmp = res;
+        res = res->next;
+        delete tmp;
+    }
 }
